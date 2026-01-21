@@ -1,16 +1,40 @@
-# This is a sample Python script.
+from fastapi import FastAPI, Request
+from fastapi.responses import Response
+from fastapi.staticfiles import StaticFiles
+from starlette.middleware.sessions import SessionMiddleware
+import os
+import models
+import database
+from router import group, expense, user, authentication, frontend, participant
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+models.Base.metadata.create_all(bind=database.engine)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+IMAGES_DIR = os.path.join(BASE_DIR, "images")
+
+os.makedirs(IMAGES_DIR, exist_ok=True)
+
+app = FastAPI()
+
+app.add_middleware(SessionMiddleware, secret_key="supersecret123")
+
+app.mount(
+    "/images",
+    StaticFiles(directory=IMAGES_DIR),
+    name="images"
+)
+
+app.include_router(authentication.router)
+app.include_router(group.router)
+app.include_router(expense.router)
+app.include_router(participant.router)
+app.include_router(user.router)
+app.include_router(frontend.router)
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+@app.middleware("http")
+async def no_cache_middleware(request: Request, call_next):
+    response: Response = await call_next(request)
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response

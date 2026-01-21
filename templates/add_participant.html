@@ -1,0 +1,191 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <title>Add Participant</title>-->
+<!--    <style>-->
+<!--        body { font-family: Arial; background:#f4f6f9; padding:40px; }-->
+<!--        .box { background:white; padding:25px; border-radius:10px; }-->
+<!--        input, button { width:100%; padding:10px; margin-top:10px; }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div class="box">-->
+<!--    <h2>Add Participant</h2>-->
+<!--    <form method="post">-->
+<!--        <input type="text" name="name" placeholder="Name" required>-->
+<!--        <input type="email" name="email" placeholder="Email (optional)">-->
+<!--        <button>Add</button>-->
+<!--    </form>-->
+<!--</div>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Participant</title>
+
+    <link rel="icon" type="image/jpeg" href="/images/Personal_Task_Manager.jpeg">
+
+    <style>
+        body{
+            margin:0;
+            font-family: Arial, sans-serif;
+            min-height:100vh;
+            background: url("/images/background.jpeg") no-repeat center/cover;
+            background-attachment: fixed;
+        }
+
+        .overlay{
+            min-height:100vh;
+            background: rgba(0,0,0,0.55);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:30px;
+        }
+
+        .box{
+            width: 520px;
+            max-width: 95%;
+            background: rgba(255,255,255,0.95);
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        h1{
+            margin: 0 0 6px 0;
+            font-size: 26px;
+            color:#222;
+        }
+
+        .sub{
+            margin: 0 0 18px 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        label{
+            display:block;
+            margin-top: 12px;
+            font-weight: 600;
+            color:#333;
+        }
+
+        input{
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            margin-top: 6px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus{
+            border-color: #007bff;
+        }
+
+        .error{
+            background: #ffe5e5;
+            color: #b10000;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 12px;
+            font-size: 14px;
+        }
+
+        .btn{
+            width: 100%;
+            padding: 12px;
+            margin-top: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .btn-primary{
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover{
+            opacity: 0.9;
+        }
+
+        .actions{
+            display:flex;
+            gap:10px;
+            margin-top: 14px;
+        }
+
+        .btn-secondary{
+            flex:1;
+            background: #6c757d;
+            color:white;
+        }
+
+        .btn-secondary:hover{
+            opacity:0.9;
+        }
+
+        .btn-back{
+            flex:1;
+            background: #28a745;
+            color:white;
+        }
+
+        .btn-back:hover{
+            opacity:0.9;
+        }
+
+        a{
+            text-decoration:none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="overlay">
+    <div class="box">
+
+        <h1>Add Participant</h1>
+        <p class="sub">
+            Group: <strong>{{ group.name }}</strong>
+        </p>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form action="/frontend/groups/{{ group_id }}/add-participant" method="post">
+            <label>Name</label>
+            <input type="text" name="name" placeholder="e.g. Ali" required>
+
+            <label>Email (optional)</label>
+            <input type="email" name="email" placeholder="e.g. ali@gmail.com">
+
+            <button class="btn btn-primary" type="submit">Add Participant</button>
+        </form>
+
+        <div class="actions">
+            <a href="/frontend/groups/{{ group_id }}">
+                <button class="btn btn-back" type="button">⬅ Back to Group</button>
+            </a>
+
+            <a href="/frontend/groups">
+                <button class="btn btn-secondary" type="button">📌 Groups</button>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

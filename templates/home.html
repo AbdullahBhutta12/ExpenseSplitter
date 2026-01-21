@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        window.onpageshow = function (event) {
+            if (event.persisted) {
+                window.location.href = "/auth/login";
+            }
+        };
+    </script>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+    <title>Personal Task Manager</title>
+    <link rel="icon" type="image/jpeg" href="/images/background.jpeg">
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 0;
+            background: url("/images/background.jpeg")
+                        no-repeat center center/cover;
+            color: white;
+            text-align: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        .overlay{
+            background: rgba(0,0,0,0.55);
+            height: 100vh;
+            padding-top: 120px;
+        }
+        h1{
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        p{
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+        a button{
+            padding: 12px 24px;
+            font-size: 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-primary{
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-secondary{
+            background-color: #28a745;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="overlay">
+    <h1>Welcome to Your Personal Task Manager</h1>
+    <p>Organize your daily tasks and events, manage deadlines, and stay productive.</p>
+
+    <a href="/frontend/login">
+        <button class="btn-primary">Login</button>
+    </a>
+    <a href="/frontend/send-code">
+        <button class="btn-secondary">Sign Up</button>
+    </a>
+</div>
+</body>
+</html>
