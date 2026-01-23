@@ -3,55 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <title>Send Verification Code</title>
-    <link rel="icon" type="image/jpeg" href="/images/Personal_Task_Manager.jpeg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" type="image/jpeg" href="/images/logo.jpeg">
+
     <style>
-        body {
-            background: #f4f4f4;
-            font-family: Arial;
-            padding: 40px;
-            background: url("/images/background.jpeg")
-                        no-repeat center/cover;
+        *{ box-sizing:border-box; }
+
+        body{
+            margin:0;
+            font-family: Arial, sans-serif;
+            min-height:100vh;
+            background: url("/images/background.jpeg") no-repeat center/cover;
             background-attachment: fixed;
-            min-height: 100vh;
         }
-        .box {
-            width: 350px;
-            margin: auto;
-            background: #fff;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 0 8px rgba(0,0,0,0.2);
+
+        .overlay{
+            min-height:100vh;
+            background: rgba(0,0,0,0.55);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding: 30px 16px;
         }
-        input { width: 93%; padding: 10px; margin-top: 10px; }
-        button {
-            width: 100%; padding: 10px; background: #007bff;
-            color: white; border: none; margin-top: 15px; cursor: pointer;
+
+        .card{
+            width: 520px;
+            max-width: 95%;
+            background: rgba(255,255,255,0.96);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.30);
         }
-        .back {
-            display: block;
-            text-align: center;
-            margin-top: 15px;
+
+        h1{
+            margin:0;
+            font-size: 24px;
+            color:#222;
+        }
+
+        .sub{
+            margin-top: 6px;
+            margin-bottom: 14px;
+            color:#666;
             font-size: 14px;
-            color: #007bff;
-            text-decoration: none;
+        }
+
+        label{
+            display:block;
+            margin-top: 12px;
+            font-weight: 800;
+            color:#333;
+            font-size: 13px;
+        }
+
+        input{
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border-radius: 12px;
+            border: 1px solid #ccc;
+            outline:none;
+            font-size: 14px;
+            background: white;
+        }
+
+        input:focus{
+            border-color:#007bff;
+        }
+
+        .btn{
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            cursor:pointer;
+            font-weight: 900;
+            font-size: 15px;
+            margin-top: 16px;
+            transition: 0.2s;
+        }
+
+        .btn:hover{
+            transform: translateY(-1px);
+            opacity: 0.95;
+        }
+
+        .btn-primary{
+            background:#007bff;
+            color:white;
+        }
+
+        .row{
+            display:flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-dark{
+            background:#343a40;
+            color:white;
+            flex:1;
+        }
+
+        .btn-success{
+            background:#28a745;
+            color:white;
+            flex:1;
+        }
+
+        .error{
+            margin-top: 12px;
+            padding: 10px;
+            border-radius: 12px;
+            background: #ffe5e5;
+            border: 1px solid #ffbcbc;
+            color:#b10000;
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        .hint{
+            margin-top: 10px;
+            font-size: 12px;
+            color:#666;
+            line-height: 1.5;
         }
     </style>
 </head>
+
 <body>
+<div class="overlay">
+    <div class="card">
 
-<div class="box">
-    <h2>Email Verification</h2>
-    <br>
-    <form action="/frontend/send-code-html" method="post">
-        <label>Enter your email
-            <input type="email" name="email" placeholder="you@example.com" required>
-        </label>
-        <button type="submit">Send OTP</button>
-    </form>
-    <a class="back" href="/frontend/login">Back to Login</a>
-    <br><br>
-    <p class="hint">Email already verified? <a href="/frontend/signup">Sign-up</a></p>
+        <h1>📩 Verify Your Email</h1>
+        <p class="sub">We will send a 6-digit OTP to your email.</p>
+
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form action="/frontend/send-code-html" method="post">
+            <label>Email
+                <input type="email" name="email" placeholder="you@example.com" required>
+            </label>
+
+            <button class="btn btn-primary" type="submit">
+                Send Verification Code ✅
+            </button>
+        </form>
+
+        <div class="row">
+            <a href="/frontend/login" style="flex:1; text-decoration:none;">
+                <button type="button" class="btn btn-dark">🔐 Back to Login</button>
+            </a>
+
+            <a href="/frontend/" style="flex:1; text-decoration:none;">
+                <button type="button" class="btn btn-success">🏠 Home</button>
+            </a>
+        </div>
+
+        <div class="hint">
+            Tip: OTP expires in 2 minutes ⏳ <br>
+            Check spam/junk folder if you don't receive email.
+        </div>
+
+    </div>
 </div>
-
 </body>
 </html>

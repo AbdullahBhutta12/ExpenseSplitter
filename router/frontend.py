@@ -28,10 +28,32 @@ def get_current_user_from_cookie(request: Request, db: Session = Depends(databas
 
 
 @router.get("/dashboard")
-def dashboard(request: Request):
+def dashboard(
+    request: Request,
+    db: Session = Depends(database.get_db),
+    current_user: schemas.User = Depends(get_current_user_from_cookie)
+):
+    # total groups
+    groups = group.get_all(db, current_user.id)
+    total_groups = len(groups)
+
+    # total participants & expenses (all groups)
+    total_participants = 0
+    total_expenses = 0
+
+    for g in groups:
+        total_participants += len(participant.get_participants(db, g.id))
+        total_expenses += len(expense.get_by_group(g.id, db))
+
     return templates.TemplateResponse(
         "dashboard.html",
-        {"request": request}
+        {
+            "request": request,
+            "user": current_user,
+            "total_groups": total_groups,
+            "total_participants": total_participants,
+            "total_expenses": total_expenses
+        }
     )
 
 
@@ -62,7 +84,6 @@ def group_detail(
         return RedirectResponse("/frontend/groups", status_code=303)
 
     participants_list = participant.get_participants(db, group_id)
-
     expenses_list = expense.get_by_group(group_id, db)
 
     participant_map = {p.id: p.name for p in participants_list}
@@ -76,13 +97,18 @@ def group_detail(
         expenses_view.append({
             "title": e.title,
             "amount": float(e.amount),
-            "paid_by": participant_map.get(e.paid_by_id, f"ID {e.paid_by_id}")
+            "paid_by": participant_map.get(e.paid_by_id, f"ID {e.paid_by_id}"),
+            "split_amount": 0
         })
 
-    # Equal split amount per person
+    # Divide amount (TOTAL/participants)
     split_amount = 0
     if len(participants_list) > 0:
         split_amount = total_amount / len(participants_list)
+
+    # split_amount for every expense
+    for e in expenses_view:
+        e["split_amount"] = float(split_amount)
 
     return templates.TemplateResponse(
         "group_detail.html",
@@ -95,7 +121,6 @@ def group_detail(
             "total_amount": total_amount
         }
     )
-
 
 @router.post("/groups")
 def create_group(
@@ -237,7 +262,27 @@ async def send_code_html(
         db=Depends(database.get_db)
 ):
     data = schemas.Emails(email=email)
-    user.send_code(data, db)
+
+    try:
+        user.send_code(data, db)
+    except Exception as e:
+        return templates.TemplateResponse(
+            "send_code.html",
+            {"request": request, "error": "OTP not sent. Try again."}
+        )
+
+    request.session["pending_email"] = email
+
+    return RedirectResponse(url="/frontend/verify", status_code=303)
+
+
+
+@router.get("/verify")
+def verify_email_page(request: Request):
+    email = request.session.get("pending_email")
+
+    if not email:
+        return RedirectResponse("/frontend/send-code", status_code=303)
 
     return templates.TemplateResponse(
         "verify_email.html",
@@ -245,22 +290,21 @@ async def send_code_html(
     )
 
 
-@router.get("/verify")
-def verify_email_page(request: Request, email: str = ""):
-    return templates.TemplateResponse("verify_email.html", {"request": request, "email": email})
-
-
 @router.post("/verify")
 def verify_email_html(
         request: Request,
-        email: str = Form(...),
         verification_code: str = Form(...),
         db=Depends(database.get_db)
 ):
+    email = request.session.get("pending_email")
+    if not email:
+        return RedirectResponse("/frontend/send-code", status_code=303)
+
     data = schemas.VerifyEmail(email=email, verification_code=verification_code)
 
     try:
         user.verify_email(data, db)
+        request.session.pop("pending_email", None)
         return RedirectResponse(url="/frontend/signup", status_code=303)
 
     except HTTPException as e:
@@ -526,11 +570,12 @@ def profile_page(request: Request):
 def logout(request: Request):
     request.session.clear()
 
-    response = RedirectResponse(url="/frontend/login", status_code=303)
+    response = RedirectResponse(url="/frontend/", status_code=303)
     response.delete_cookie("access_token")
 
     return response
 
 
-
-
+@router.get("/")
+def home(request: Request):
+    return templates.TemplateResponse("home.html", {"request": request})

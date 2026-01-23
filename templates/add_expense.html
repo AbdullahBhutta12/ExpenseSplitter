@@ -3,135 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <title>Add Expense</title>
-    <link rel="icon" type="image/jpeg" href="/images/Personal_Task_Manager.jpeg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" type="image/jpeg" href="/images/logo.jpeg">
 
     <style>
+        *{ box-sizing:border-box; }
+
         body{
+            margin:0;
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+            min-height:100vh;
             background: url("/images/background.jpeg") no-repeat center/cover;
-            min-height: 100vh;
+            background-attachment: fixed;
         }
 
         .overlay{
+            min-height:100vh;
             background: rgba(0,0,0,0.55);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 30px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding: 30px 16px;
         }
 
-        .box{
-            width: 480px;
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        .card{
+            width: 520px;
+            max-width: 95%;
+            background: rgba(255,255,255,0.96);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.30);
         }
 
-        h2{
-            margin-top: 0;
-            text-align: center;
+        h1{
+            margin:0;
+            font-size: 24px;
+            color:#222;
+        }
+
+        .sub{
+            margin-top: 6px;
+            margin-bottom: 14px;
+            color:#666;
+            font-size: 14px;
         }
 
         label{
-            display: block;
+            display:block;
             margin-top: 12px;
-            font-weight: bold;
+            font-weight: 800;
+            color:#333;
+            font-size: 13px;
         }
 
         input, select{
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-top: 6px;
-            border-radius: 8px;
+            border-radius: 12px;
             border: 1px solid #ccc;
-            outline: none;
+            outline:none;
+            font-size: 14px;
+            background: white;
         }
 
-        button{
+        input:focus, select:focus{
+            border-color:#007bff;
+        }
+
+        .btn{
             width: 100%;
             padding: 12px;
-            margin-top: 18px;
             border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
+            border-radius: 12px;
+            cursor:pointer;
+            font-weight: 900;
+            font-size: 15px;
+            margin-top: 16px;
+            transition: 0.2s;
+        }
+
+        .btn:hover{
+            transform: translateY(-1px);
+            opacity: 0.95;
         }
 
         .btn-primary{
-            background: #007bff;
-            color: white;
+            background:#007bff;
+            color:white;
         }
 
-        .btn-secondary{
-            background: #6c757d;
-            color: white;
+        .row{
+            display:flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-dark{
+            background:#343a40;
+            color:white;
+            flex:1;
+        }
+
+        .btn-success{
+            background:#28a745;
+            color:white;
+            flex:1;
         }
 
         .error{
             margin-top: 12px;
-            color: red;
-            font-weight: bold;
-            text-align: center;
+            padding: 10px;
+            border-radius: 12px;
+            background: #ffe5e5;
+            border: 1px solid #ffbcbc;
+            color:#b10000;
+            font-weight: 800;
+            font-size: 13px;
         }
 
-        .links{
-            display: flex;
-            gap: 10px;
-            margin-top: 12px;
+        .empty{
+            background: #f7f7f7;
+            border: 1px dashed #bbb;
+            padding: 10px;
+            border-radius: 12px;
+            margin-top: 10px;
+            color:#444;
+            font-size: 13px;
         }
 
-        .links a{
-            width: 100%;
-            text-decoration: none;
-        }
     </style>
 </head>
+
 <body>
-
 <div class="overlay">
-    <div class="box">
+    <div class="card">
 
-        <h2>➕ Add Expense</h2>
+        <h1>💰 Add Expense</h1>
+        <p class="sub">Group: <strong>{{ group.name }}</strong></p>
 
         {% if error %}
-            <div class="error">{{ error }}</div>
+        <div class="error">{{ error }}</div>
         {% endif %}
 
         <form action="/frontend/groups/{{ group_id }}/add-expense" method="post">
 
-            <label>Expense Title</label>
-            <input type="text" name="title" placeholder="e.g. Dinner" required>
+            <label>Expense Title
+                <input type="text" name="title" placeholder="e.g. Dinner, Hotel, Fuel" required>
+            </label>
 
-            <label>Amount</label>
-            <input type="number" step="0.01" name="amount" placeholder="e.g. 1500" required>
+            <label>Amount (PKR)
+                <input type="number" name="amount" placeholder="e.g. 2500" required>
+            </label>
 
-            <label>Paid By</label>
-            <select name="paid_by_id" required>
-                <option value="" disabled selected>-- Select Participant --</option>
-                {% for p in participants %}
+            <label>Paid By
+                {% if participants and participants|length > 0 %}
+                <select name="paid_by_id" required>
+                    <option value="" disabled selected>Select participant</option>
+                    {% for p in participants %}
                     <option value="{{ p.id }}">{{ p.name }}</option>
-                {% endfor %}
-            </select>
+                    {% endfor %}
+                </select>
+                {% else %}
+            </label>
 
-            <button class="btn-primary" type="submit">Add Expense</button>
+            <div class="empty">
+                ⚠️ No participants found. Please add participants first.
+            </div>
+            {% endif %}
+
+            <button class="btn btn-primary" type="submit">
+                Add Expense ✅
+            </button>
         </form>
 
-        <div class="links">
-            <a href="/frontend/groups/{{ group_id }}">
-                <button class="btn-secondary" type="button">⬅ Back</button>
+        <div class="row">
+            <a href="/frontend/groups/{{ group_id }}" style="flex:1; text-decoration:none;">
+                <button class="btn btn-success" type="button">⬅ Back to Group</button>
             </a>
 
-            <a href="/frontend/groups">
-                <button class="btn-secondary" type="button">🏠 Groups</button>
+            <a href="/frontend/groups" style="flex:1; text-decoration:none;">
+                <button class="btn btn-dark" type="button">📌 Groups</button>
             </a>
         </div>
 
+
     </div>
 </div>
-
 </body>
 </html>

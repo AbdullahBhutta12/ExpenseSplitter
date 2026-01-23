@@ -15,32 +15,27 @@ def create(db: Session, group_id: int, title: str, amount: float, paid_by_id: in
 
 def calculate_equal_split(db: Session, group_id: int):
     participants = db.query(models.Participant).filter(models.Participant.group_id == group_id).all()
-
     expenses = db.query(models.Expense).filter(models.Expense.group_id == group_id).all()
 
-    if not participants:
-        return []
-
-    total_expense = sum(exp.amount for exp in expenses)
-    share = total_expense / len(participants)
-
-    balances = {p.id: 0 for p in participants}
-
-    for exp in expenses:
-        balances[exp.paid_by_id] += exp.amount
-
-    for p in participants:
-        balances[p.id] -= share
+    count_participants = len(participants)
 
     result = []
-    for p in participants:
+
+    for e in expenses:
+        paid_by_name = "Unknown"
+        if e.paid_by:
+            paid_by_name = e.paid_by.name
+
+        split_amount = (e.amount / count_participants) if count_participants > 0 else 0
+
         result.append({
-            "participant_name": p.name,
-            "balance": round(balances[p.id], 2)
+            "title": e.title,
+            "amount": float(e.amount),
+            "paid_by": paid_by_name,
+            "split_amount": float(split_amount)
         })
 
     return result
-
 
 def get_by_group(group_id: int, db: Session):
     return db.query(models.Expense).filter(models.Expense.group_id == group_id).all()

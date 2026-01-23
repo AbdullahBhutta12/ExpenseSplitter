@@ -2,272 +2,195 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Expense Splitter Dashboard</title>
+    <title>Dashboard - Expense Splitter</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="icon" type="image/jpeg" href="/images/Personal_Task_Manager.jpeg">
+    <link rel="icon" type="image/jpeg" href="/images/logo.jpeg">
 
     <style>
         *{box-sizing:border-box;}
         body{
-            margin:0;
             font-family: Arial, sans-serif;
+            margin:0;
+            padding:0;
             min-height:100vh;
-            background: url("/images/background.jpeg") no-repeat center/cover;
+            background: url("/images/background.jpeg") no-repeat center center/cover;
             background-attachment: fixed;
         }
 
-        /* Overlay for better readability on image */
         .overlay{
             min-height:100vh;
-            background: rgba(0,0,0,0.55);
-            padding: 30px;
+            background: rgba(0,0,0,0.45);
+            padding: 22px 14px;
         }
 
-        /* Top Bar */
         .topbar{
+            max-width:1100px;
+            margin:auto;
             display:flex;
             justify-content:space-between;
             align-items:center;
-            padding: 18px 22px;
+            gap:12px;
+            flex-wrap:wrap;
+            padding: 14px 16px;
             border-radius: 14px;
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(6px);
-            color:white;
+            background: rgba(255,255,255,0.92);
             box-shadow: 0 8px 18px rgba(0,0,0,0.25);
         }
 
         .brand{
-            display:flex;
-            align-items:center;
-            gap:14px;
-        }
-
-        .brand h1{
-            font-size:22px;
-            margin:0;
-            letter-spacing:0.5px;
-        }
-
-        .brand p{
-            margin:0;
-            font-size:12px;
-            opacity:0.9;
-        }
-
-        .right-actions{
-            display:flex;
-            gap:10px;
-            align-items:center;
-        }
-
-        .btn{
-            border:none;
-            cursor:pointer;
-            padding:10px 14px;
-            border-radius:10px;
-            font-size:14px;
-            font-weight:600;
-            transition:0.2s;
-            text-decoration:none;
-            display:inline-block;
-        }
-
-        .btn:hover{transform:translateY(-1px);}
-
-        .btn-primary{
-            background:#007bff;
-            color:white;
-        }
-
-        .btn-success{
-            background:#28a745;
-            color:white;
-        }
-
-        .btn-danger{
-            background:#dc3545;
-            color:white;
-        }
-
-        /* Layout */
-        .container{
-            margin-top: 25px;
-            display:grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap:20px;
-        }
-
-        .card{
-            background: rgba(255,255,255,0.95);
-            border-radius:16px;
-            padding:20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.18);
-        }
-
-        .card h2{
-            margin:0 0 10px 0;
-            font-size:20px;
+            font-size:18px;
+            font-weight:900;
             color:#222;
         }
 
-        .muted{
-            color:#666;
+        .actions{
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+
+        .btn{
+            padding:10px 14px;
+            border-radius:10px;
+            border:none;
+            text-decoration:none;
+            font-weight:800;
+            cursor:pointer;
+            color:white;
+            display:inline-block;
+            transition:0.2s;
+            font-size:14px;
+        }
+
+        .btn:hover{opacity:0.95; transform: translateY(-1px);}
+
+        .btn-blue{background:#007bff;}
+        .btn-dark{background:#343a40;}
+        .btn-red{background:#dc3545;}
+
+        .container{
+            max-width:1100px;
+            margin:18px auto 0;
+        }
+
+        .hero{
+            background: rgba(255,255,255,0.94);
+            border-radius: 16px;
+            padding: 24px 18px;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+            text-align:center;
+        }
+
+        .hero h1{
             margin:0;
-            line-height:1.5;
+            font-size:28px;
+            color:#222;
+        }
+
+        .hero p{
+            margin:10px auto 0;
+            max-width:700px;
+            color:#555;
+            line-height:1.6;
             font-size:14px;
         }
 
         .stats{
+            margin-top:16px;
             display:grid;
-            grid-template-columns: 1fr 1fr;
-            gap:12px;
-            margin-top:15px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap:14px;
         }
 
-        .stat-box{
-            background:#f4f6f9;
-            border-radius:14px;
-            padding:14px;
-            border:1px solid #e6e6e6;
+        @media(max-width:900px){
+            .stats{grid-template-columns: 1fr;}
         }
 
-        .stat-title{
+        .card{
+            background:#fff;
+            border-radius:16px;
+            padding:16px;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+            text-align:left;
+        }
+
+        .card h3{
             margin:0;
-            font-size:12px;
-            color:#666;
-        }
-        .stat-value{
-            margin:6px 0 0 0;
-            font-size:20px;
-            font-weight:800;
-            color:#111;
-        }
-
-        /* Quick Actions */
-        .quick-actions{
-            display:flex;
-            flex-direction:column;
-            gap:12px;
-            margin-top:14px;
-        }
-
-        .action-item{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:10px;
-            padding:14px;
-            border-radius:14px;
-            background:#f7f8fb;
-            border:1px solid #e9e9e9;
-        }
-
-        .action-item strong{
-            font-size:14px;
+            font-size:16px;
             color:#222;
         }
 
-        .action-item span{
-            font-size:12px;
-            color:#666;
+        .big{
+            font-size:28px;
+            font-weight:900;
+            margin-top:8px;
+            color:#007bff;
         }
 
-        /* Responsive */
-        @media(max-width: 900px){
-            .container{
-                grid-template-columns: 1fr;
-            }
+        .muted{
+            margin-top:6px;
+            font-size:13px;
+            color:#666;
+            line-height:1.5;
+        }
+
+        .footer-note{
+            margin-top:14px;
+            text-align:center;
+            color: rgba(255,255,255,0.85);
+            font-size:13px;
         }
     </style>
 </head>
-<body>
 
+<body>
 <div class="overlay">
 
-
     <div class="topbar">
-        <div class="brand">
-            <div>
-                <h1>💰 Expense Splitter</h1>
-                <p>Split group expenses easily</p>
-            </div>
-        </div>
+        <div class="brand">💸 Expense Splitter</div>
 
-        <div class="right-actions">
-            <a class="btn btn-success" href="/frontend/groups">My Groups</a>
-            <a class="btn btn-primary" href="/frontend/profile">Profile</a>
-            <a class="btn btn-danger" href="/frontend/logout">Logout</a>
+        <div class="actions">
+            <a class="btn btn-blue" href="/frontend/groups">👥 My Groups</a>
+            <a class="btn btn-dark" href="/frontend/profile">👤 Profile</a>
+            <a class="btn btn-red" href="/frontend/logout">🚪 Logout</a>
         </div>
     </div>
 
     <div class="container">
-
-        <div class="card">
-            <h2>Welcome 👋</h2>
-            <p class="muted">
-                Create expense groups, add participants manually, and split expenses equally.
-                This dashboard helps you manage everything in one place.
+        <div class="hero">
+            <h1>Welcome Back 👋</h1>
+            <p>
+                Create groups, add participants, add expenses and instantly see who owes whom.
+                <b>Equal Split</b> is enabled by default ✅
             </p>
 
             <div class="stats">
-                <div class="stat-box">
-                    <p class="stat-title">Total Groups</p>
-                    <p class="stat-value">{{ total_groups if total_groups else "0" }}</p>
+                <div class="card">
+                    <h3>👥 Total Groups</h3>
+                    <div class="big">{{ total_groups }}</div>
+                    <div class="muted">Groups you created and manage.</div>
                 </div>
-                <div class="stat-box">
-                    <p class="stat-title">Total Expenses</p>
-                    <p class="stat-value">{{ total_expenses if total_expenses else "0" }}</p>
-                </div>
-            </div>
 
-            <div style="margin-top:18px;">
-                <a class="btn btn-success" href="/frontend/groups" style="width:100%; text-align:center;">
-                    ➕ Create / Open Groups
-                </a>
+                <div class="card">
+                    <h3>👤 Total Participants</h3>
+                    <div class="big">{{ total_participants }}</div>
+                    <div class="muted">Participants added inside your groups.</div>
+                </div>
+
+                <div class="card">
+                    <h3>💳 Total Expenses</h3>
+                    <div class="big">{{ total_expenses }}</div>
+                    <div class="muted">Total expenses added across all groups.</div>
+                </div>
             </div>
         </div>
 
-
-        <div class="card">
-            <h2>Quick Actions</h2>
-            <p class="muted">Jump directly to important screens.</p>
-
-            <div class="quick-actions">
-                <div class="action-item">
-                    <div>
-                        <strong>📌 View Groups</strong><br>
-                        <span>See all your expense groups</span>
-                    </div>
-                    <a class="btn btn-primary" href="/frontend/groups">Open</a>
-                </div>
-
-                <div class="action-item">
-                    <div>
-                        <strong>➕ Create New Group</strong><br>
-                        <span>Start a new trip / event</span>
-                    </div>
-                    <a class="btn btn-success" href="/frontend/groups">Create</a>
-                </div>
-
-                <div class="action-item">
-                    <div>
-                        <strong>👤 My Profile</strong><br>
-                        <span>View profile & image</span>
-                    </div>
-                    <a class="btn btn-primary" href="/frontend/profile">View</a>
-                </div>
-            </div>
-
-            <div style="margin-top:16px; font-size:12px; color:#777;">
-                ✅ Equal split enabled <br>
-                ⏳ Custom split (later)
-            </div>
+        <div class="footer-note">
+            Tip: Open a group → Add Participants → Add Expenses → View split result ✅
         </div>
-
     </div>
 
 </div>
-
 </body>
 </html>

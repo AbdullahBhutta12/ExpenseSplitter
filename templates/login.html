@@ -1,57 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <title>Login</title>
-    <link rel="icon" type="image/jpeg" href="/images/Personal_Task_Manager.jpeg">
+    <meta charset="UTF-8">
+    <title>Login - Expense Splitter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" type="image/jpeg" href="/images/logo.jpeg">
+
     <style>
-        body{font-family: Arial; padding:24px; max-width:500px; margin:auto;background: url("/images/background.jpeg") no-repeat center/cover; background-attachment: fixed; min-height: 100vh;}
-        .box { width:450px; margin:auto; background:#fff; padding:25px;
-               border-radius:10px; box-shadow:0 0 8px rgba(0,0,0,0.2); }
-        label{display:block; margin-top:12px; font-weight:600;}
-        input, button{width:100%; padding:10px; margin-top:6px; box-sizing:border-box;}
-        button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; margin-top: 15px; cursor: pointer;}
+        *{box-sizing:border-box;}
+        body{
+            margin:0;
+            font-family: Arial, sans-serif;
+            min-height:100vh;
+            background: url("/images/background.jpeg") no-repeat center/cover;
+            background-attachment: fixed;
+        }
+
+        .overlay{
+            min-height:100vh;
+            background: rgba(0,0,0,0.58);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding: 30px 16px;
+        }
+
+        .card{
+            width: 460px;
+            max-width: 95%;
+            background: rgba(255,255,255,0.96);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+        }
+
+        h1{
+            margin: 0 0 6px 0;
+            font-size: 26px;
+            color:#222;
+        }
+
+        .sub{
+            margin: 0 0 16px 0;
+            color:#666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        label{
+            display:block;
+            margin-top: 12px;
+            font-weight:700;
+            color:#333;
+            font-size: 14px;
+        }
+
+        input{
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border-radius: 12px;
+            border: 1px solid #ccc;
+            outline: none;
+            font-size: 15px;
+        }
+
+        input:focus{
+            border-color:#007bff;
+        }
+
+        .btn{
+            width: 100%;
+            padding: 12px 14px;
+            border: none;
+            border-radius: 12px;
+            cursor:pointer;
+            font-size: 15px;
+            font-weight: 800;
+            margin-top: 16px;
+            transition: 0.2s;
+        }
+
+        .btn:hover{
+            transform: translateY(-1px);
+            opacity: 0.95;
+        }
+
+        .btn-primary{
+            background:#007bff;
+            color:white;
+        }
+
+        .links{
+            margin-top: 14px;
+            display:flex;
+            justify-content:space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 13px;
+        }
+
+        .links a{
+            color:#007bff;
+            font-weight:700;
+            text-decoration:none;
+        }
+
         .error{
-            color:#721c24;
-            background:#f8d7da;
-            border:1px solid #f5c6cb;
-            padding:10px;
-            border-radius:5px;
-            margin-bottom:10px;
-            text-align:center;
+            margin-top: 12px;
+            padding: 10px;
+            border-radius: 12px;
+            background: #ffe5e5;
+            border: 1px solid #ffbcbc;
+            color:#b10000;
+            font-weight:700;
+            font-size: 14px;
         }
     </style>
 </head>
-<body>
-<div class="box">
-    <h1>Login</h1>
-    {% if error %}
-    <div id="error-box" class="error">
-        {{ error }}
-    </div>
-    {% endif %}
-    <form action="/frontend/login" method="post">
-        <label>Email
-            <input type="email" name="email" required placeholder="you@example.com">
-        </label>
 
-        <label>Password
-            <input type="password" name="password" required placeholder="password">
-        </label>
-        <p><a href="/frontend/forgot-password"><small>Forgot password?</small></a></p>
-        <button type="submit">Login</button>
-        <p class="hint">No account? <a href="/frontend/send-code">Sign up</a></p>
-    </form>
-    <script>
-        setTimeout(() => {
-            const errorBox = document.getElementById("error-box");
-            if (errorBox) {
-                errorBox.style.transition = "opacity 0.5s";
-                errorBox.style.opacity = "0";
-                setTimeout(() => errorBox.remove(), 500);
-            }
-        }, 2000);
-    </script>
+<body>
+<div class="overlay">
+    <div class="card">
+
+        <h1>🔐 Login</h1>
+        <p class="sub">Login to manage groups and split expenses.</p>
+
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form action="/frontend/login" method="post">
+            <label>Email
+                <input type="email" name="email" placeholder="you@example.com" required>
+            </label>
+
+            <label>Password
+                <input type="password" name="password" placeholder="Enter password" required>
+            </label>
+
+            <button class="btn btn-primary" type="submit">Login</button>
+        </form>
+
+        <div class="links">
+            <a href="/frontend/send-code">🆕 Create new account</a>
+            <a href="/frontend/forgot-password">Forgot password?</a>
+        </div>
+
+    </div>
 </div>
 </body>
 </html>
